@@ -9,12 +9,11 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
 
 class BurgerBuilder extends React.Component {
   state = {
     purchasing: false,
-    loading: false,
     error: false,
   };
 
@@ -26,6 +25,7 @@ class BurgerBuilder extends React.Component {
     //   console.log('[BurgerBuilder] componentDidMount - axios error', error);
     //   this.setState({ error: true });
     // }
+    this.props.initIngredients();
   }
 
   purchaseStartHandler = () => {
@@ -56,17 +56,16 @@ class BurgerBuilder extends React.Component {
     );
 
   render() {
-    const orderSummary =
-      this.state.loading || !this.props.ingredients ? (
-        <Spinner />
-      ) : (
-        <OrderSummary
-          ingredients={this.props.ingredients}
-          onCancelOrder={this.purchaseCancelHandler}
-          onContinueOrder={this.purchaseContinueHandler}
-          price={this.props.totalPrice}
-        />
-      );
+    const orderSummary = !this.props.ingredients ? (
+      <Spinner />
+    ) : (
+      <OrderSummary
+        ingredients={this.props.ingredients}
+        onCancelOrder={this.purchaseCancelHandler}
+        onContinueOrder={this.purchaseContinueHandler}
+        price={this.props.totalPrice}
+      />
+    );
 
     const burger = this.props.ingredients ? (
       <Aux>
@@ -107,13 +106,13 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addIngredientHandler: ingredientType => {
-    dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientType });
+    dispatch(actionCreators.addIngredient(ingredientType, 1));
   },
   removeIngredientHandler: ingredientType => {
-    dispatch({
-      type: actionTypes.REMOVE_INGREDIENT,
-      ingredientType,
-    });
+    dispatch(actionCreators.addIngredient(ingredientType, -1));
+  },
+  initIngredients: () => {
+    dispatch(actionCreators.initIngredients());
   },
 });
 

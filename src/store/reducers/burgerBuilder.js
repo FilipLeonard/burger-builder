@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions';
+import * as actionTypes from '../actions/actionTypes';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -17,16 +17,16 @@ const initialState = {
   totalPrice: 4,
 };
 
-const addIngredientAndGetUpdatedState = (oldState, ingredientType, howMany) => {
-  const oldCount = oldState.ingredients[ingredientType];
+const addIngredient = (state, { ingredientType, howMany }) => {
+  const oldCount = state.ingredients[ingredientType];
   const newCount = oldCount + howMany;
-  if (newCount < 0) return oldState;
+  if (newCount < 0) return state;
   const updatedIngredients = {
-    ...oldState.ingredients,
+    ...state.ingredients,
     [ingredientType]: newCount,
   };
   const updatedPrice =
-    oldState.totalPrice + INGREDIENT_PRICES[ingredientType] * howMany;
+    state.totalPrice + INGREDIENT_PRICES[ingredientType] * howMany;
 
   return {
     ingredients: updatedIngredients,
@@ -37,9 +37,9 @@ const addIngredientAndGetUpdatedState = (oldState, ingredientType, howMany) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENT:
-      return addIngredientAndGetUpdatedState(state, action.ingredientType, 1);
-    case actionTypes.REMOVE_INGREDIENT:
-      return addIngredientAndGetUpdatedState(state, action.ingredientType, -1);
+      return addIngredient(state, action);
+    case actionTypes.SET_INGREDIENTS:
+      return { ...state, ingredients: action.ingredients };
     default:
       return state;
   }
