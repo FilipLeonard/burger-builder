@@ -148,7 +148,6 @@ class ContactData extends React.Component {
   };
 
   checkValidity(value, rules) {
-    console.log(rules);
     let isValid = true;
 
     if (rules.required) {
