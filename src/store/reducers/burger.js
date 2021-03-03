@@ -37,17 +37,9 @@ const addIngredientAndGetUpdatedState = (oldState, ingredientType, howMany) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENT:
-      return addIngredientAndGetUpdatedState(
-        state,
-        action.payload.ingredientType,
-        1
-      );
+      return addIngredientAndGetUpdatedState(state, action.ingredientType, 1);
     case actionTypes.REMOVE_INGREDIENT:
-      return addIngredientAndGetUpdatedState(
-        state,
-        action.payload.ingredientType,
-        -1
-      );
+      return addIngredientAndGetUpdatedState(state, action.ingredientType, -1);
     default:
       return state;
   }

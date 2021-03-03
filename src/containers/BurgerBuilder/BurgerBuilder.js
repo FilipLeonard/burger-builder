@@ -11,18 +11,8 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actionTypes from '../../store/actions';
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  cheese: 0.4,
-  bacon: 0.7,
-  meat: 1.3,
-};
-
 class BurgerBuilder extends React.Component {
   state = {
-    ingredients: null,
-    totalPrice: 4,
-    purchasable: false,
     purchasing: false,
     loading: false,
     error: false,
@@ -38,14 +28,6 @@ class BurgerBuilder extends React.Component {
     // }
   }
 
-  // addIngredientHandler = type => {
-  //   this._addIngredient(type, 1);
-  // };
-
-  // removeIngredientHandler = type => {
-  //   this._addIngredient(type, -1);
-  // };
-
   purchaseStartHandler = () => {
     this.setState({ purchasing: true });
   };
@@ -55,75 +37,46 @@ class BurgerBuilder extends React.Component {
   };
 
   purchaseContinueHandler = async () => {
-    const queryString = Object.entries(this.state.ingredients)
-      .map(
-        ([param, value]) =>
-          `${encodeURIComponent(param)}=${encodeURIComponent(value)}`
-      )
-      .concat([`price=${this.state.totalPrice}`])
-      .join('&');
-    this.props.history.push(`/checkout?${queryString}`);
+    this.props.history.push(`/checkout`);
   };
 
-  // _addIngredient = (ofType, thatMany) => {
-  //   const oldCount = this.state.ingredients[ofType];
-  //   const newCount = oldCount + thatMany;
-  //   if (newCount < 0) return;
-  //   const updatedIngredients = {
-  //     ...this.state.ingredients,
-  //     [ofType]: newCount,
-  //   };
-  //   const updatedPrice =
-  //     this.state.totalPrice + INGREDIENT_PRICES[ofType] * thatMany;
-
-  //   this.setState({
-  //     ingredients: updatedIngredients,
-  //     totalPrice: Number.parseFloat(updatedPrice.toFixed(2)),
-  //   });
-  //   this._updatePurchaseState(updatedIngredients);
-  // };
-
-  _updatePurchaseState = ingredients => {
-    const totalIngredientsCount = !!Object.values(ingredients).reduce(
-      (count, currCount) => count + currCount,
+  isPurchasable = () =>
+    Object.values(this.props.ingredients).reduce(
+      (totalIngredientsCount, currentIngredientCount) =>
+        totalIngredientsCount + currentIngredientCount,
       0
-    );
-    const purchasable = totalIngredientsCount > 0;
-    this.setState({ purchasable });
-  };
+    ) > 0;
 
   getDisabledInfo = () =>
     Object.fromEntries(
-      Object.entries(this.state.ingredients).map(([ingr, count]) => [
+      Object.entries(this.props.ingredients).map(([ingr, count]) => [
         ingr,
         !count,
       ])
     );
 
   render() {
-    // const disabledInfo = this.getDisabledInfo();
-
     const orderSummary =
-      this.state.loading || !this.state.ingredients ? (
+      this.state.loading || !this.props.ingredients ? (
         <Spinner />
       ) : (
         <OrderSummary
-          ingredients={this.state.ingredients}
+          ingredients={this.props.ingredients}
           onCancelOrder={this.purchaseCancelHandler}
           onContinueOrder={this.purchaseContinueHandler}
-          price={this.state.totalPrice}
+          price={this.props.totalPrice}
         />
       );
 
-    const burger = this.state.ingredients ? (
+    const burger = this.props.ingredients ? (
       <Aux>
-        <Burger ingredients={this.state.ingredients} />
+        <Burger ingredients={this.props.ingredients} />
         <BuildControls
-          addIngredient={this.addIngredientHandler}
-          removeIngredient={this.removeIngredientHandler}
+          addIngredient={this.props.addIngredientHandler}
+          removeIngredient={this.props.removeIngredientHandler}
           disabled={this.getDisabledInfo()}
-          purchasable={this.state.purchasable}
-          price={this.state.totalPrice}
+          purchasable={this.isPurchasable()}
+          price={this.props.totalPrice}
           startPurchase={this.purchaseStartHandler}
         />
       </Aux>
@@ -154,12 +107,12 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addIngredientHandler: ingredientType => {
-    dispatch({ type: actionTypes.ADD_INGREDIENT, payload: { ingredientType } });
+    dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientType });
   },
   removeIngredientHandler: ingredientType => {
     dispatch({
       type: actionTypes.REMOVE_INGREDIENT,
-      payload: { ingredientType },
+      ingredientType,
     });
   },
 });
