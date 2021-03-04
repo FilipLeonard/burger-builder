@@ -13,12 +13,16 @@ export const initIngredients = () => {
       const { data: ingredients } = await axios.get('/ingredients.json');
       dispatch(setIngredients(ingredients));
     } catch (error) {
-      console.log('[BurgerBuilder] componentDidMount - axios error', error);
+      dispatch(fetchIngredientsFailed(error));
     }
   };
 };
 
-const setIngredients = ingredients => ({
+export const setIngredients = ingredients => ({
   type: actionTypes.SET_INGREDIENTS,
   ingredients,
+});
+
+const fetchIngredientsFailed = () => ({
+  type: actionTypes.FETCH_INGREDIENTS_FAILED,
 });

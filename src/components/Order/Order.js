@@ -3,7 +3,6 @@ import React from 'react';
 import classes from './Order.css';
 
 const order = props => {
-  console.log(props.ingredients);
   if (!props.ingredients) return null;
   const formattedIngredients = Object.entries(props.ingredients).map(
     ([ingr, amount]) => (

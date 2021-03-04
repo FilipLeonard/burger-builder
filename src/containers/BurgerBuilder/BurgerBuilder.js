@@ -18,14 +18,7 @@ class BurgerBuilder extends React.Component {
   };
 
   async componentDidMount() {
-    // try {
-    //   const { data: ingredients } = await axios.get('/ingredients.json');
-    //   this.setState({ ingredients });
-    // } catch (error) {
-    //   console.log('[BurgerBuilder] componentDidMount - axios error', error);
-    //   this.setState({ error: true });
-    // }
-    this.props.initIngredients();
+    this.props.onInitIngredients();
   }
 
   purchaseStartHandler = () => {
@@ -37,6 +30,7 @@ class BurgerBuilder extends React.Component {
   };
 
   purchaseContinueHandler = async () => {
+    this.props.onInitPurchase();
     this.props.history.push(`/checkout`);
   };
 
@@ -79,7 +73,7 @@ class BurgerBuilder extends React.Component {
           startPurchase={this.purchaseStartHandler}
         />
       </Aux>
-    ) : this.state.error ? (
+    ) : this.props.error ? (
       <p>Ingredients cannot be fetched</p>
     ) : (
       <Spinner />
@@ -100,20 +94,22 @@ class BurgerBuilder extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  ingredients: state.burger.ingredients,
-  totalPrice: state.burger.totalPrice,
+  ingredients: state.burgerBuilder.ingredients,
+  totalPrice: state.burgerBuilder.totalPrice,
+  error: state.burgerBuilder.error,
 });
 
 const mapDispatchToProps = dispatch => ({
+  onInitIngredients: () => {
+    dispatch(actionCreators.initIngredients());
+  },
   addIngredientHandler: ingredientType => {
     dispatch(actionCreators.addIngredient(ingredientType, 1));
   },
   removeIngredientHandler: ingredientType => {
     dispatch(actionCreators.addIngredient(ingredientType, -1));
   },
-  initIngredients: () => {
-    dispatch(actionCreators.initIngredients());
-  },
+  onInitPurchase: () => dispatch(actionCreators.purchaseInit()),
 });
 
 export default connect(
