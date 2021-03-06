@@ -20,9 +20,9 @@ const withErrorHandler = (WrappedComponent, axios) => {
         error => {
           console.log(
             '[withErrorHandler] constructor - interceptor response error',
-            error
+            { error }
           );
-          this.setState({ error: error });
+          this.setState({ error });
         }
       );
     }
@@ -37,15 +37,20 @@ const withErrorHandler = (WrappedComponent, axios) => {
     };
 
     render() {
+      const defaultErrorMessage = 'Something went wrong';
       return (
         <Aux>
           <Modal
             show={this.state.error}
             modalClosed={this.errorConfirmedHandler}
           >
+            {this.state.error ? this.state.error.message : defaultErrorMessage}
+            <hr />
             {this.state.error
-              ? this.state.error.message
-              : 'Something went wrong...'}
+              ? this.state.error.response.data.error.message
+                ? this.state.error.response.data.error.message
+                : defaultErrorMessage
+              : defaultErrorMessage}
           </Modal>
           <WrappedComponent {...this.props} />
         </Aux>

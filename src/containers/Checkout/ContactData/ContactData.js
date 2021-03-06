@@ -8,6 +8,7 @@ import Input from '../../../components/UI/Input/Input';
 import classes from './ContactData.css';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actionCreators from '../../../store/actions/index';
+import { updateObject, checkValidity } from '../../../shared/utility';
 
 class ContactData extends React.Component {
   state = {
@@ -18,13 +19,13 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Your Name',
         },
-        // value: '',
-        value: 'Leontin',
+        value: '',
+        // value: 'Leontin',
         validation: {
           required: true,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       street: {
@@ -33,13 +34,13 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Street',
         },
-        // value: '',
-        value: 'Telegrafului 65',
+        value: '',
+        // value: 'Telegrafului 65',
         validation: {
           required: true,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       zipCode: {
@@ -48,15 +49,15 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'ZIPCODE',
         },
-        // value: '',
-        value: '30049',
+        value: '',
+        // value: '30049',
         validation: {
           required: true,
           minLength: 5,
           maxLength: 5,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       city: {
@@ -65,13 +66,13 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'City',
         },
-        // value: '',
-        value: 'Timisoara',
+        value: '',
+        // value: 'Timisoara',
         validation: {
           required: true,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       country: {
@@ -80,13 +81,13 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Country',
         },
-        // value: '',
-        value: 'Romania',
+        value: '',
+        // value: 'Romania',
         validation: {
           required: true,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       email: {
@@ -95,13 +96,13 @@ class ContactData extends React.Component {
           type: 'email',
           placeholder: 'Your E-Mail',
         },
-        // value: '',
-        value: 'leo@leo.com',
+        value: '',
+        // value: 'leo@leo.com',
         validation: {
           required: true,
         },
-        // valid: false,
-        valid: true,
+        valid: false,
+        // valid: true,
         touched: false,
       },
       deliveryMethod: {
@@ -125,61 +126,37 @@ class ContactData extends React.Component {
         value: 'optimal',
       },
     },
-    // formIsInvalid: true,
-    formIsInvalid: false,
+    formIsInvalid: true,
+    // formIsInvalid: false,
   };
 
   orderHandler = event => {
     event.preventDefault();
     const formData = Object.fromEntries(new FormData(event.target));
     const order = {
+      userId: this.props.userId,
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       orderData: formData,
     };
-    this.props.onOrderBurger(order);
-    // try {
-    //   const res = await axios.post('/orders.json', order);
-    //   console.log({ res });
-    //   this.setState({ loading: false });
-    //   this.props.history.push('/');
-    // } catch (error) {
-    //   console.log('[BurgerBuilder] purchaseContinueHandler', error);
-    //   this.setState({ loading: false });
-    // }
+    this.props.onOrderBurger(order, this.props.token);
   };
-
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-
-    return isValid;
-  }
 
   inputChangedHandler = event => {
     const { name, value } = event.target;
 
-    const valid = this.checkValidity(value, {
+    const valid = checkValidity(value, {
       ...this.state.orderForm[name].validation,
     });
-    const updatedFormElement = {
-      ...this.state.orderForm[name],
+    const updatedFormElement = updateObject(this.state.orderForm[name], {
       value,
       valid,
       touched: true,
-    };
-    const updatedForm = { ...this.state.orderForm, [name]: updatedFormElement };
+    });
+
+    const updatedForm = updateObject(this.state.orderForm, {
+      [name]: updatedFormElement,
+    });
 
     const formIsInvalid = this.isFormInvalid(updatedForm);
 
@@ -197,6 +174,7 @@ class ContactData extends React.Component {
       <Input
         key={key}
         label={key}
+        name={key}
         elementType={config.elementType}
         elementConfig={config.elementConfig}
         value={config.value}
@@ -210,11 +188,7 @@ class ContactData extends React.Component {
     let form = (
       <form onSubmit={this.orderHandler}>
         {formElements}
-        <Button
-          type="submit"
-          btnType="Success"
-          disabled={this.state.formIsInvalid}
-        >
+        <Button btnType="Success" disabled={this.state.formIsInvalid}>
           ORDER
         </Button>
       </form>
@@ -235,11 +209,13 @@ const mapStateToProps = state => ({
   ingredients: state.burgerBuilder.ingredients,
   totalPrice: state.burgerBuilder.totalPrice,
   loading: state.order.loading,
+  token: state.auth.token,
+  userId: state.auth.userId,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onOrderBurger: orderData =>
-    dispatch(actionCreators.purchaseBurger(orderData)),
+  onOrderBurger: (orderData, token) =>
+    dispatch(actionCreators.purchaseBurger(orderData, token)),
 });
 
 export default connect(

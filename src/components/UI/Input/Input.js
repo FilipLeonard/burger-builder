@@ -20,7 +20,7 @@ const input = props => {
           {...props.elementConfig}
           value={props.value}
           onChange={props.changed}
-          name={props.label}
+          name={props.name}
         />
       );
       break;
@@ -35,7 +35,7 @@ const input = props => {
           className={inputClasses.join(' ')}
           value={props.value}
           onChange={props.changed}
-          name={props.label}
+          name={props.name}
         >
           {selectOptions}
         </select>
@@ -48,7 +48,7 @@ const input = props => {
           {...props.elementConfig}
           value={props.value}
           onChange={props.changed}
-          name={props.label}
+          name={props.name}
         />
       );
   }

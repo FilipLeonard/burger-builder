@@ -27,7 +27,8 @@
   background-color: #ccc;
 }
 
-.Invalid {
+.Invalid,
+.Invalid:focus {
   border: 1px solid red;
   background-color: salmon;
 }

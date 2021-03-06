@@ -11,16 +11,6 @@ const INGREDIENT_PRICES = {
 };
 
 class OrderSummary extends React.Component {
-  // shouldComponentUpdate(nextProps) {
-  // pass purchasing as prop
-  //   const purchaseStarted = nextProps.purchasing;
-  //   return purchaseStarted;
-  // }
-
-  componentDidUpdate() {
-    console.log('[OrderSummary] - componentDidUpdate props', this.props);
-  }
-
   render() {
     const ingredientsSummary = Object.entries(this.props.ingredients)
       .filter(([_, count]) => count > 0)
