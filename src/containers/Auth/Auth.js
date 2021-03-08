@@ -89,7 +89,7 @@ class Auth extends React.Component {
     const formData = Object.fromEntries(new FormData(event.target));
     const { email, password } = formData;
 
-    this.props.onAuth(email, password, this.state.isSignup);
+    this.props.onAuthUser(email, password, this.state.isSignup);
   };
 
   switchAuthModeHandler = () =>
@@ -155,8 +155,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onAuth: (email, password, isSignUp) =>
-    dispatch(actionCreators.auth(email, password, isSignUp, axios)),
+  onAuthUser: (email, password, isSignUp) =>
+    dispatch(actionCreators.authUser(email, password, isSignUp, axios)),
   onSetAuthRedirectPath: path =>
     dispatch(actionCreators.setAuthRedirectPath(path)),
 });
