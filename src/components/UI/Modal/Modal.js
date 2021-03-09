@@ -20,14 +20,6 @@ const modal = props => (
 );
 
 function areEqual(prevProps, nextProps) {
-  // console.log(
-  //   '[Modal.js] areEqual - props.show is the same',
-  //   prevProps.show === nextProps.show
-  // );
-  // console.log(
-  //   '[Modal.js] areEqual - props.children.type is the same',
-  //   prevProps.children.type === nextProps.children.type
-  // );
   return (
     prevProps.show === nextProps.show &&
     prevProps.children.type === nextProps.children.type //changes from OrderSummary to Spinner
