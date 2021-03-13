@@ -26,6 +26,6 @@ Working live demo: https://react-my-burger-ecd86.firebaseapp.com/
 
 - React
 - Redux, redux-thunk and redux-saga
-- Axios
+- Firebase Authentication & Database, Axios
 - routing, HOCs, react hooks
 - CSS modules
