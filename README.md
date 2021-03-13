@@ -16,8 +16,8 @@ Working live demo: https://react-my-burger-ecd86.firebaseapp.com/
 - Uses Redux for state management
   - _master_ branch uses `redux-thunk` for async logic that interacts with the store
   - _saga_ branch uses `redux-saga` for that
-- _master_ branch contains class-based components
-  - _hooks_ branch contains the conversion of the whole project to only use functional components and react hooks
+- _redux_ branch contains class-based components
+  - _hooks_ branch contains the conversion of the whole project to only use functional components and react hooks (eventually merged into master)
 - Firbase used for storage and authentication
 
 ---
